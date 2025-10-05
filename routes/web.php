@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\TestResourceController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +43,7 @@ Route::get('ID/{id}',function($id) {
 
 
 // optional parameter
-Route::get('/greet/{name?}', function ($name = "Guest") {
+Route::get('/greet/{name?}', function ($name="Guest") {
     return "Hello, " . $name;
 });
 
@@ -51,3 +54,81 @@ Route::get('/profile', function () {
     return "User Profile";
 })->name('profile');
 
+
+//////////////////////////////////////////////////////////
+
+
+// Addition Route
+Route::get('/add/{a}/{b}', function ($a, $b) {
+    return "Sum = " . ($a + $b);
+});
+
+// Subtraction Route
+Route::get('/sub/{a}/{b}', function ($a, $b) {
+    return "sub = " . ($a - $b);
+});
+
+
+
+
+
+////////////////////////////
+
+// Addition Route try pass string 
+//what happen if we pass string
+Route::get('/add/{a?}/{b?}', function ($a="dwwd", $b="dwd") {
+    return "Sum = " . $a ." ". $b;
+});
+
+
+
+
+////////////////////////////////////////////////////////////
+
+
+Route::get('/home', fn() => view('home'));
+Route::get('/about', fn() => view('about'));
+
+
+
+
+Route::get('/drinks', function () {
+    return "Welcome to the drinks page!";
+})->middleware('age');
+
+
+// first syntax using arrow function
+Route::get('/contact',fn() => view('contact')
+)->name('contact.show');
+
+
+
+
+Route::resource('my', TestResourceController::class);
+// Route::get('/my/{id}/update', [TestResourceController::class, 'update']);
+// Route::get('/my/{id}/store', [TestResourceController::class, 'store']);
+
+
+//second syntax using simple syntax function
+// Route::get('/contact',function () { 
+//     return view('contact');
+// })->name('contact.show');
+
+
+//third syntax using controller
+// Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
+Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+
+
+////////////task Middleware role user///////
+Route::get('/dashboard', function () {
+    return "Welcome Admin Dashboard";
+})->middleware('checkadmin');
+
+/////////////////////////controller////////////////////////
+
+Route::get('/register', function() {
+    return view('register');
+});
+
+Route::post('/user/register', [UserController::class, 'postRegister']);
