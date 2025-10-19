@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\TestResourceController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -98,9 +101,9 @@ Route::get('/drinks', function () {
 
 
 // first syntax using arrow function
-Route::get('/contact',fn() => view('contact')
-)->name('contact.show');
-
+// Route::get('/contact',fn() => view('contact')
+// )->name('contact.show');
+Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact');
 
 
 
@@ -132,3 +135,15 @@ Route::get('/register', function() {
 });
 
 Route::post('/user/register', [UserController::class, 'postRegister']);
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('homeSeconde');
+
+
+Route::post('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/');   // or route('login')
+})->name('logout');
