@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\TestResourceController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,9 +35,9 @@ Route::get('/about', function () {
 
 
 //New Route for return data not route to view(blade)
- Route::get('/home', function() {
- return 'Welcome At Home Function';
- });
+//  Route::get('/home', function() {
+//  return 'Welcome At Home Function';
+//  });
 
 
 //  parameter route
@@ -147,3 +149,18 @@ Route::post('/logout', function (Request $request) {
     $request->session()->regenerateToken();
     return redirect('/');   // or route('login')
 })->name('logout');
+
+
+
+
+
+Route::get('/', fn () => redirect()->route('posts.index'));
+
+// Custom routes FIRST
+Route::get('posts/trashed', [PostController::class, 'trashed'])->name('posts.trashed');
+Route::post('posts/{post}/restore', [PostController::class, 'restore'])->name('posts.restore');
+
+// Then the resources
+Route::resource('posts', PostController::class);
+Route::resource('posts.comments', CommentController::class)->shallow();
+
